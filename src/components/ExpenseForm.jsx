@@ -17,6 +17,7 @@ export const ExpenseForm = () => {
     const [error, setError] = useState('')
     const dispatch = useContext(BudgetDispatchContext)
     const state = useContext(BudgetStateContext)
+    const isEditing = Boolean(state.editingId)
 
     useEffect(() => {
         if(state.editingId) {
@@ -70,7 +71,7 @@ export const ExpenseForm = () => {
     return (
         <form className=" space-y-5" onSubmit={handleSubmit}>
             <legend className="uppercase text-center text-2xl font-black border-b-4 border-blue-500 py-2">
-                Nuevo gasto
+                {isEditing ? "Guardar cambios" : "Nuevo gasto"}
             </legend>
 
             {error && <ErrorMessage>{error}</ErrorMessage>}
@@ -141,7 +142,7 @@ export const ExpenseForm = () => {
             <input
                 type="submit"
                 className=" bg-blue-600 cursor-pointer w-full p-2 text-white uppercase font-bold rounded-lg"
-                value="Registrar gasto"
+                value={isEditing ? "Guardar cambios" : "Nuevo gasto"}
             />
         </form>
     )
