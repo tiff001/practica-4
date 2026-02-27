@@ -7,6 +7,7 @@ import { BudgetDispatchContext, BudgetStateContext } from '../context/BudgetCont
 import ErrorMessage from './ErrorMessage'
 
 export const ExpenseForm = () => {
+
     const [expense, setExpense] = useState({
         expenseName: "",
         amount: 0,
@@ -42,7 +43,6 @@ export const ExpenseForm = () => {
             date: value
         })
     }
-
     // Validación formulario
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -52,6 +52,23 @@ export const ExpenseForm = () => {
             setError('Todos los Campos son Obligatorios')
             return
         }
+
+    
+        if(!state){
+            setError("No se pudo acceder al presupuesto actual.")
+            return
+        }
+
+    const baseTotal = state.expenses.reduce((total, currentExpense) =>{
+        return state.editingId && currentExpense.id === state.editingId ? total : total + currentExpense.amount
+    }, 0)
+
+    const newTotal = baseTotal + expense.amount
+
+    if (newTotal > state.budget) {
+        setError("El gasto excede el presupuesto disponible")
+        return
+    }
 
         if(state.editingId){
             dispatch({type: 'update-expense', payload: {expense: {id: state.editingId, ...expense}}})
